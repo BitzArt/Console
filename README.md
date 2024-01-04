@@ -1,4 +1,3 @@
-@@ -1,10 +0,0 @@
 # BitzArt.Console
 
 [![NuGet](https://img.shields.io/nuget/v/BitzArt.Console.svg)](https://www.nuget.org/packages/BitzArt.Console/)
