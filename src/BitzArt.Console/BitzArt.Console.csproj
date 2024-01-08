@@ -8,7 +8,7 @@
 
 		<PackageId>BitzArt.Console</PackageId>
 		<Authors>BitzArt</Authors>
-		<Description></Description>
+		<Description>A modern opinionated console application framework for .Net</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/BitzArt/Console</RepositoryUrl>
