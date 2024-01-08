@@ -2,13 +2,19 @@
 
 namespace BitzArt.Console;
 
-public class ConsoleApp(ConsoleAppBuilder builder)
+public class ConsoleApp
 {
-    public IServiceProvider Services { get; private set; } = builder.Services.BuildServiceProvider();
+    public IServiceProvider Services { get; private set; }
+
+    public ConsoleApp(ConsoleAppBuilder builder)
+    {
+        builder.Services.AddSingleton(this);
+        Services = builder.Services.BuildServiceProvider();
+    }
 
     public void Run<TConsoleMenu>(CancellationToken cancellationToken = default) where TConsoleMenu : IConsoleMenu
     {
-        var consoleMenu = Services.GetRequiredService<TConsoleMenu>();
-        consoleMenu.RunAsync().Wait(cancellationToken);
+        var navigationManager = Services.GetRequiredService<IConsoleAppNavigationManager>();
+        navigationManager.NavigateAsync<TConsoleMenu>().Wait(cancellationToken);
     }
 }

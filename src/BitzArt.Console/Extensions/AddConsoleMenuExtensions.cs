@@ -5,12 +5,21 @@ namespace BitzArt.Console;
 
 public static class AddConsoleMenuExtensions
 {
+    /// <summary>
+    /// Registers all console menus defined in the assembly containing this type in the <see cref="IServiceCollection"/>
+    /// </summary>
     public static IServiceCollection AddConsoleMenusFromAssemblyContaining<TAssemblyPointer>(this IServiceCollection services)
         => services.AddConsoleMenusFromAssemblyContaining(typeof(TAssemblyPointer));
 
+    /// <summary>
+    /// Registers all console menus defined in the assembly containing this type in the <see cref="IServiceCollection"/>
+    /// </summary>
     public static IServiceCollection AddConsoleMenusFromAssemblyContaining(this IServiceCollection services, Type type)
         => services.AddConsoleMenusFromAssembly(type.Assembly);
 
+    /// <summary>
+    /// Registers all console menus defined in the assembly in the <see cref="IServiceCollection"/>
+    /// </summary>
     public static IServiceCollection AddConsoleMenusFromAssembly(this IServiceCollection services, Assembly assembly)
     {
         var tools = assembly
@@ -23,6 +32,9 @@ public static class AddConsoleMenuExtensions
         return services;
     }
 
+    /// <summary>
+    /// Registers a Console Menu of type <paramref name="TConsoleMenu"/> in the <see cref="IServiceCollection"/>
+    /// </summary>
     public static IServiceCollection AddConsoleMenu<TConsoleMenu>(this IServiceCollection services)
         where TConsoleMenu : class, IConsoleMenu
     {
@@ -32,6 +44,9 @@ public static class AddConsoleMenuExtensions
         return services;
     }
 
+    /// <summary>
+    /// Registers a Console Menu of <paramref name="type"/> in the <see cref="IServiceCollection"/>
+    /// </summary>
     public static IServiceCollection AddConsoleMenu(this IServiceCollection services, Type type)
     {
         if (type is null) throw new ArgumentException($"{nameof(type)} must not be null");

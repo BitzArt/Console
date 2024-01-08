@@ -13,5 +13,8 @@ public class ConsoleAppBuilder
         Services.AddSingleton<IConsoleAppNavigationManager, ConsoleAppNavigationManager>();
     }
 
-    public ConsoleApp Build() => new(this);
+    public ConsoleApp Build()
+    {
+        return new ConsoleApp(this);
+    }
 }
