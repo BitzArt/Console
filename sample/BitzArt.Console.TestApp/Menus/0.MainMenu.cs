@@ -7,7 +7,7 @@ internal class MainMenu : ConsoleSelectionMenu
 
     public MainMenu()
     {
-        AddSubmenu<FruitsMenu>("Fruits");
-        AddSubmenu<VeggiesMenu>("Veggies");
+        AddSubmenu<FruitsMenu>("1. Fruits");
+        AddSubmenu<VeggiesMenu>("2. Veggies");
     }
 }

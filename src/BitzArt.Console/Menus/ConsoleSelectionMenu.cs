@@ -1,5 +1,4 @@
 ﻿using Spectre.Console;
-using static System.Collections.Specialized.BitVector32;
 
 namespace BitzArt.Console;
 
@@ -45,15 +44,15 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
             return;
         }
 
-        OnSelection(selected);
+        OnBeforeSelectionInvoke(selected);
         InvokeSelection(selected);
-        OnSelectionInvoked(selected);
+        OnSelection(selected);
         OnAfterSelectionInvoked(selected);
 
         Render();
     }
 
-    public virtual void OnSelection(ConsoleSelectionMenuItem selection)
+    public virtual void OnBeforeSelectionInvoke(ConsoleSelectionMenuItem selection)
     {
     }
 
@@ -62,7 +61,7 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         selection.Action?.Invoke();
     }
 
-    public virtual void OnSelectionInvoked(ConsoleSelectionMenuItem selection)
+    public virtual void OnSelection(ConsoleSelectionMenuItem selection)
     {
     }
 
