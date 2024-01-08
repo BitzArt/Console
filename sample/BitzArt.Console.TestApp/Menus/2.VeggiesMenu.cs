@@ -6,7 +6,7 @@ internal class VeggiesMenu : ConsoleSelectionMenu
 {
     public override string Title => "Veggies";
 
-    public VeggyOptions Options { get; }
+    public VeggyOptions _options;
 
     private bool _focusOnPotato = false;
 
@@ -15,7 +15,7 @@ internal class VeggiesMenu : ConsoleSelectionMenu
         AddSelection("tomato", pauseOnComplete: true);
         AddSelection("cucumber", pauseOnComplete: true);
         AddSelection("is potato a vegetable?", () => _focusOnPotato = true, pauseOnComplete: true);
-        Options = options;
+        _options = options;
     }
 
     public override void OnBeforeSelectionInvoke(ConsoleSelectionMenuItem selection)
@@ -28,7 +28,7 @@ internal class VeggiesMenu : ConsoleSelectionMenu
     {
         if (_focusOnPotato)
         {
-            var possibleNegation = Options.IsPotatoAVegetable ? "" : "not ";
+            var possibleNegation = _options.IsPotatoAVegetable ? "" : "not ";
             var text = $"Application settings say that potato is {possibleNegation}a vegetable.";
             AnsiConsole.WriteLine(text);
             return;

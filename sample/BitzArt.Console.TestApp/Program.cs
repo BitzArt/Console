@@ -8,7 +8,7 @@ internal class Program
 
         builder.Services.AddConsoleMenusFromAssemblyContaining<Program>();
         builder.AddVeggyOptions();
-        
+
         var app = builder.Build();
 
         app.Run<MainMenu>();

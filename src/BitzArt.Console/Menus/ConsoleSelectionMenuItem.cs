@@ -1,6 +1,4 @@
-﻿using Spectre.Console;
-
-namespace BitzArt.Console;
+﻿namespace BitzArt.Console;
 
 public class ConsoleSelectionMenuItem
 {

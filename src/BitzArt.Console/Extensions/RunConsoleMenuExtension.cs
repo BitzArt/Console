@@ -17,7 +17,7 @@ public static class RunConsoleMenuExtension
     internal static async Task RunConsoleMenuAsync(this IServiceProvider serviceProvider, Type menuType)
     {
         if (!menuType.IsAssignableTo(typeof(IConsoleMenu))) throw new ArgumentException($"Menu Type must implement {nameof(IConsoleMenu)}", nameof(menuType));
-        
+
         var menu = (IConsoleMenu)serviceProvider.GetRequiredService(menuType);
 
         AttachApp(menu, serviceProvider);

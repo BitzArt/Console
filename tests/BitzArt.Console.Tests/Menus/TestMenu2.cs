@@ -1,5 +1,4 @@
-﻿using BitzArt.Console;
-using Spectre.Console;
+﻿using Spectre.Console;
 
 namespace BitzArt.Console;
 

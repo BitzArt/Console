@@ -36,7 +36,7 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         var backSelectionOption = IsMainMenu ? ConsoleSelectionMenuItem.ExitItem : ConsoleSelectionMenuItem.BackItem;
         selectionPrompt.AddChoice(backSelectionOption);
 
-        var selected = AnsiConsole.Prompt(selectionPrompt);
+        var selected = selectionPrompt.Show(AnsiConsole.Console);
 
         if (selected.IsExit)
         {
