@@ -3,11 +3,14 @@ using Spectre.Console;
 
 namespace BitzArt.Console;
 
-public abstract class ConsoleMenu : IConsoleMenu
+public abstract class ConsoleMenu
 {
     public ConsoleApp? App { get; set; }
+    public ConsoleMenu? Parent { get; set; }
 
-    public virtual string Title => "Menu";
+    public string? Title { get; internal set; }
+
+    public bool? IsMainMenu { get; internal set; }
 
     public Task RunAsync()
     {
@@ -15,13 +18,13 @@ public abstract class ConsoleMenu : IConsoleMenu
         return Task.CompletedTask;
     }
 
-    public virtual void Render()
+    protected virtual void Render()
     {
         AnsiConsole.Clear();
-        AnsiConsoleMenu.WriteTitle(Title);
+        AnsiConsoleMenu.WriteTitle(Title!);
     }
 
-    public async Task RunAsync<TConsoleMenu>() where TConsoleMenu : IConsoleMenu
+    public async Task RunAsync<TConsoleMenu>() where TConsoleMenu : class
     {
         var navigationManager = App!.Services.GetRequiredService<IConsoleAppNavigationManager>();
         await navigationManager.NavigateAsync<TConsoleMenu>();

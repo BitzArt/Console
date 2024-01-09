@@ -8,53 +8,56 @@ public static class AddConsoleMenuExtensions
     /// <summary>
     /// Registers all console menus defined in the assembly containing this type in the <see cref="IServiceCollection"/>
     /// </summary>
-    public static IServiceCollection AddConsoleMenusFromAssemblyContaining<TAssemblyPointer>(this IServiceCollection services)
-        => services.AddConsoleMenusFromAssemblyContaining(typeof(TAssemblyPointer));
+    public static IConsoleAppBuilder AddConsoleMenusFromAssemblyContaining<TAssemblyPointer>(this IConsoleAppBuilder builder)
+        => builder.AddConsoleMenusFromAssemblyContaining(typeof(TAssemblyPointer));
 
     /// <summary>
     /// Registers all console menus defined in the assembly containing this type in the <see cref="IServiceCollection"/>
     /// </summary>
-    public static IServiceCollection AddConsoleMenusFromAssemblyContaining(this IServiceCollection services, Type type)
-        => services.AddConsoleMenusFromAssembly(type.Assembly);
+    public static IConsoleAppBuilder AddConsoleMenusFromAssemblyContaining(this IConsoleAppBuilder builder, Type type)
+        => builder.AddConsoleMenusFromAssembly(type.Assembly);
 
     /// <summary>
     /// Registers all console menus defined in the assembly in the <see cref="IServiceCollection"/>
     /// </summary>
-    public static IServiceCollection AddConsoleMenusFromAssembly(this IServiceCollection services, Assembly assembly)
+    public static IConsoleAppBuilder AddConsoleMenusFromAssembly(this IConsoleAppBuilder builder, Assembly assembly)
     {
         var tools = assembly
             .DefinedTypes
             .Where(x => x.IsAbstract == false)
-            .Where(x => x.GetInterfaces().Contains(typeof(IConsoleMenu)));
+            .Where(x => x.GetCustomAttributes<AppMenuAttribute>().Any());
 
-        foreach (var tool in tools) services.AddConsoleMenu(tool);
+        foreach (var tool in tools) builder.AddConsoleMenu(tool);
 
-        return services;
+        return builder;
     }
 
     /// <summary>
     /// Registers a Console Menu of type <paramref name="TConsoleMenu"/> in the <see cref="IServiceCollection"/>
     /// </summary>
-    public static IServiceCollection AddConsoleMenu<TConsoleMenu>(this IServiceCollection services)
-        where TConsoleMenu : class, IConsoleMenu
+    public static IConsoleAppBuilder AddConsoleMenu<TConsoleMenu>(this IConsoleAppBuilder builder)
+        where TConsoleMenu : class
     {
-        services.AddTransient<TConsoleMenu>();
-        services.AddTransient<IConsoleMenu, TConsoleMenu>();
+        builder.Services.AddTransient<TConsoleMenu>();
 
-        return services;
+        var map = builder.MenuMap;
+        map.Add(typeof(TConsoleMenu));
+
+        return builder;
     }
 
     /// <summary>
     /// Registers a Console Menu of <paramref name="type"/> in the <see cref="IServiceCollection"/>
     /// </summary>
-    public static IServiceCollection AddConsoleMenu(this IServiceCollection services, Type type)
+    public static IConsoleAppBuilder AddConsoleMenu(this IConsoleAppBuilder builder, Type type)
     {
         if (type is null) throw new ArgumentException($"{nameof(type)} must not be null");
-        if (type.IsAssignableTo(typeof(IConsoleMenu)) == false) throw new ArgumentException($"{type.Name} is not assignable to IConsoleMenu");
 
-        services.AddTransient(type);
-        services.AddTransient(x => (IConsoleMenu)x.GetRequiredService(type));
+        builder.Services.AddTransient(type);
 
-        return services;
+        var map = builder.MenuMap;
+        map.Add(type);
+
+        return builder;
     }
 }

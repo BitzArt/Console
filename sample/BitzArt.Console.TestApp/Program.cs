@@ -6,11 +6,11 @@ internal class Program
     {
         var builder = ConsoleApp.CreateBuilder();
 
-        builder.Services.AddConsoleMenusFromAssemblyContaining<Program>();
+        builder.AddConsoleMenusFromAssemblyContaining<Program>();
         builder.AddVeggyOptions();
 
         var app = builder.Build();
 
-        app.Run<MainMenu>();
+        app.Run();
     }
 }

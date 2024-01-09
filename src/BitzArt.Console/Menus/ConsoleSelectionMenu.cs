@@ -4,17 +4,10 @@ namespace BitzArt.Console;
 
 public abstract class ConsoleSelectionMenu : ConsoleMenu
 {
-    /// <summary>
-    /// Identifies whether this is a main menu of the app or not.
-    /// </summary>
-    protected virtual bool IsMainMenu => false;
-
-    public override string Title => "Selection Menu";
-
     protected virtual List<ConsoleSelectionMenuItem> SelectionItems { get; set; } = [];
 
     public void AddSubmenu<TMenu>(string? selectionName = null)
-        where TMenu : IConsoleMenu
+        where TMenu : class
     {
         selectionName ??= typeof(TMenu).Name;
         AddSelection(selectionName, async () => await RunAsync<TMenu>());
@@ -25,31 +18,32 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         SelectionItems.Add(new ConsoleSelectionMenuItem(name, action, pauseOnComplete));
     }
 
-    public override void Render()
+    protected override void Render()
     {
-        AnsiConsole.Clear();
-
-        var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>().Title($"[green]{Title}[/]");
-
-        selectionPrompt.AddChoices(SelectionItems);
-
-        var backSelectionOption = IsMainMenu ? ConsoleSelectionMenuItem.ExitItem : ConsoleSelectionMenuItem.BackItem;
-        selectionPrompt.AddChoice(backSelectionOption);
-
-        var selected = selectionPrompt.Show(AnsiConsole.Console);
-
-        if (selected.IsExit)
+        while(true)
         {
-            OnExit();
-            return;
+            AnsiConsole.Clear();
+
+            var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>().Title($"[green]{Title}[/]");
+
+            selectionPrompt.AddChoices(SelectionItems);
+
+            var backSelectionOption = IsMainMenu!.Value ? ConsoleSelectionMenuItem.ExitItem : ConsoleSelectionMenuItem.BackItem;
+            selectionPrompt.AddChoice(backSelectionOption);
+
+            var selected = selectionPrompt.Show(AnsiConsole.Console);
+
+            if (selected.IsExit)
+            {
+                OnExit();
+                return;
+            }
+
+            OnBeforeSelectionInvoke(selected);
+            InvokeSelection(selected);
+            OnSelection(selected);
+            OnAfterSelectionInvoked(selected);
         }
-
-        OnBeforeSelectionInvoke(selected);
-        InvokeSelection(selected);
-        OnSelection(selected);
-        OnAfterSelectionInvoked(selected);
-
-        Render();
     }
 
     public virtual void OnBeforeSelectionInvoke(ConsoleSelectionMenuItem selection)
@@ -67,11 +61,13 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
 
     public virtual void OnAfterSelectionInvoked(ConsoleSelectionMenuItem selection)
     {
-        if (selection.PauseOnComplete)
-        {
-            AnsiConsole.WriteLine("Press any key to continue...");
-            System.Console.ReadKey();
-        }
+        if (selection.PauseOnComplete) Pause();
+    }
+
+    protected static void Pause()
+    {
+        AnsiConsole.WriteLine("Press any key to continue...");
+        System.Console.ReadKey();
     }
 
     public virtual void OnExit()

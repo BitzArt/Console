@@ -1,35 +1,53 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace BitzArt.Console;
 
 public static class RunConsoleMenuExtension
 {
     internal static async Task RunConsoleMenuAsync<TConsoleMenu>(this IServiceProvider serviceProvider)
-        where TConsoleMenu : IConsoleMenu
+        where TConsoleMenu : class
     {
         var menu = serviceProvider.GetRequiredService<TConsoleMenu>();
 
-        AttachApp(menu, serviceProvider);
+        if (menu is not ConsoleMenu consoleMenu) return;
 
-        await menu.RunAsync();
+        consoleMenu.Populate(serviceProvider);
+
+        await consoleMenu.RunAsync();
     }
 
     internal static async Task RunConsoleMenuAsync(this IServiceProvider serviceProvider, Type menuType)
     {
-        if (!menuType.IsAssignableTo(typeof(IConsoleMenu))) throw new ArgumentException($"Menu Type must implement {nameof(IConsoleMenu)}", nameof(menuType));
+        var menu = serviceProvider.GetRequiredService(menuType);
 
-        var menu = (IConsoleMenu)serviceProvider.GetRequiredService(menuType);
-
-        AttachApp(menu, serviceProvider);
-
-        await menu.RunAsync();
-    }
-
-    private static void AttachApp(this IConsoleMenu menu, IServiceProvider serviceProvider)
-    {
         if (menu is not ConsoleMenu consoleMenu) return;
 
+        consoleMenu.Populate(serviceProvider);
+
+        await consoleMenu.RunAsync();
+    }
+
+    private static void Populate(this ConsoleMenu menu, IServiceProvider serviceProvider)
+    {
         var app = serviceProvider.GetService<ConsoleApp>();
-        consoleMenu.App = app;
+        menu.App = app;
+
+        var appMenuAttribute = menu.GetType().GetAppMenuAttribute();
+        menu.Title = appMenuAttribute!.GetTitle();
+        menu.IsMainMenu = appMenuAttribute.IsMain;
+
+        menu.PopulateSelectionFromMethods();
+    }
+
+    private static void PopulateSelectionFromMethods(this ConsoleMenu consoleMenu)
+    {
+        if (consoleMenu is not ConsoleSelectionMenu selectionMenu) return;
+
+        var selections = consoleMenu.GetType().GetSelectionMethods();
+        foreach (var selection in selections)
+        {
+            selectionMenu.AddSelection(selection.Name, () => selection.Method.Invoke(selectionMenu, null), selection.PauseOnComplete);
+        }
     }
 }

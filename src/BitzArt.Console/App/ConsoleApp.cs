@@ -12,7 +12,19 @@ public class ConsoleApp
         Services = builder.Services.BuildServiceProvider();
     }
 
-    public void Run<TConsoleMenu>(CancellationToken cancellationToken = default) where TConsoleMenu : IConsoleMenu
+    public void Run(CancellationToken cancellationToken = default)
+    {
+        var navigationManager = Services.GetRequiredService<IConsoleAppNavigationManager>();
+        navigationManager.NavigateToMainMenuAsync().Wait(cancellationToken);
+    }
+
+    public void Run(Type mainMenuType, CancellationToken cancellationToken = default)
+    {
+        var navigationManager = Services.GetRequiredService<IConsoleAppNavigationManager>();
+        navigationManager.NavigateAsync(mainMenuType).Wait(cancellationToken);
+    }
+
+    public void Run<TConsoleMenu>(CancellationToken cancellationToken = default) where TConsoleMenu : class
     {
         var navigationManager = Services.GetRequiredService<IConsoleAppNavigationManager>();
         navigationManager.NavigateAsync<TConsoleMenu>().Wait(cancellationToken);
