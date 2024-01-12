@@ -5,6 +5,7 @@ namespace BitzArt.Console;
 public abstract class ConsoleSelectionMenu : ConsoleMenu
 {
     protected virtual List<ConsoleSelectionMenuItem> SelectionItems { get; set; } = [];
+    private bool _exiting = false;
 
     public void AddSubmenu<TMenu>(string? selectionName = null)
         where TMenu : class
@@ -22,28 +23,33 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
     {
         while(true)
         {
-            AnsiConsole.Clear();
-
-            var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>().Title($"[green]{Title}[/]");
-
-            selectionPrompt.AddChoices(SelectionItems);
-
-            var backSelectionOption = IsMainMenu!.Value ? ConsoleSelectionMenuItem.ExitItem : ConsoleSelectionMenuItem.BackItem;
-            selectionPrompt.AddChoice(backSelectionOption);
-
-            var selected = selectionPrompt.Show(AnsiConsole.Console);
-
-            if (selected.IsExit)
-            {
-                OnExit();
-                return;
-            }
-
-            OnBeforeSelectionInvoke(selected);
-            InvokeSelection(selected);
-            OnSelection(selected);
-            OnAfterSelectionInvoked(selected);
+            if (_exiting) break;
+            base.Render();
         }
+    }
+
+    protected override void Display()
+    {
+        var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>().Title($"[green]{Title}[/]");
+
+        selectionPrompt.AddChoices(SelectionItems);
+
+        var backSelectionOption = IsMainMenu!.Value ? ConsoleSelectionMenuItem.ExitItem : ConsoleSelectionMenuItem.BackItem;
+        selectionPrompt.AddChoice(backSelectionOption);
+
+        var selected = selectionPrompt.Show(AnsiConsole.Console);
+
+        if (selected.IsExit)
+        {
+            _exiting = true;
+            OnExit();
+            return;
+        }
+
+        OnBeforeSelectionInvoke(selected);
+        InvokeSelection(selected);
+        OnSelection(selected);
+        OnAfterSelectionInvoked(selected);
     }
 
     public virtual void OnBeforeSelectionInvoke(ConsoleSelectionMenuItem selection)

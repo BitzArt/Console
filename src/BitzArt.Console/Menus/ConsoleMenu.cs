@@ -21,7 +21,22 @@ public abstract class ConsoleMenu
     protected virtual void Render()
     {
         AnsiConsole.Clear();
+        OnBeforeDisplay();
+        Display();
+        OnDisplayed();
+    }
+
+    protected virtual void OnBeforeDisplay()
+    {
+    }
+
+    protected virtual void Display()
+    {
         AnsiConsoleMenu.WriteTitle(Title!);
+    }
+
+    protected virtual void OnDisplayed()
+    {
     }
 
     public async Task RunAsync<TConsoleMenu>() where TConsoleMenu : class
