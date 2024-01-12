@@ -4,8 +4,8 @@
 internal class MainMenu : ConsoleSelectionMenu
 {
     [MenuSelectionItem("Veggies")]
-    public async Task SubmenuVeggiesAsync()
+    public void NavigateToVeggiesMenu()
     {
-        await RunAsync<VeggiesMenu>();
+        Run<VeggiesMenu>();
     }
 }

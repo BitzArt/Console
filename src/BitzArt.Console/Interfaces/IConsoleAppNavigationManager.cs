@@ -2,7 +2,7 @@
 
 public interface IConsoleAppNavigationManager
 {
-    Task NavigateAsync(Type menuType);
-    Task NavigateAsync<T>() where T : class;
-    Task NavigateToMainMenuAsync();
+    public void Navigate(Type menuType);
+    public void Navigate<T>() where T : class;
+    public void NavigateToMainMenu();
 }

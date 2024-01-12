@@ -12,22 +12,22 @@ public class ConsoleApp
         Services = builder.Services.BuildServiceProvider();
     }
 
-    public void Run(CancellationToken cancellationToken = default)
+    public void Run()
     {
         var navigationManager = Services.GetRequiredService<IConsoleAppNavigationManager>();
-        navigationManager.NavigateToMainMenuAsync().Wait(cancellationToken);
+        navigationManager.NavigateToMainMenu();
     }
 
-    public void Run(Type mainMenuType, CancellationToken cancellationToken = default)
+    public void Run(Type mainMenuType)
     {
         var navigationManager = Services.GetRequiredService<IConsoleAppNavigationManager>();
-        navigationManager.NavigateAsync(mainMenuType).Wait(cancellationToken);
+        navigationManager.Navigate(mainMenuType);
     }
 
-    public void Run<TConsoleMenu>(CancellationToken cancellationToken = default) where TConsoleMenu : class
+    public void Run<TConsoleMenu>() where TConsoleMenu : class
     {
         var navigationManager = Services.GetRequiredService<IConsoleAppNavigationManager>();
-        navigationManager.NavigateAsync<TConsoleMenu>().Wait(cancellationToken);
+        navigationManager.Navigate<TConsoleMenu>();
     }
 
     public static IConsoleAppBuilder CreateBuilder()

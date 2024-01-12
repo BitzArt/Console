@@ -12,22 +12,18 @@ public abstract class ConsoleMenu
 
     public bool? IsMainMenu { get; internal set; }
 
-    public async Task RunAsync()
+    public void Run()
     {
-        await RenderAsync();
+        Render();
     }
 
-    internal virtual async Task RenderAsync()
+    internal virtual void Render()
     {
         AnsiConsole.Clear();
         DisplayTitle();
 
         OnRender();
-        await OnRenderAsync();
-
-        await DisplayAsync();
-
-        await OnDisplayAsync();
+        Display();
         OnDisplay();
     }
 
@@ -37,32 +33,21 @@ public abstract class ConsoleMenu
         AnsiConsole.WriteLine();
     }
 
-    protected virtual Task OnRenderAsync()
-    {
-        return Task.CompletedTask;
-    }
-
     protected virtual void OnRender()
     {
     }
 
-    internal virtual Task DisplayAsync()
+    internal virtual void Display()
     {
-        return Task.CompletedTask;
-    }
-
-    protected virtual Task OnDisplayAsync()
-    {
-        return Task.CompletedTask;
     }
 
     protected virtual void OnDisplay()
     {
     }
 
-    public async Task RunAsync<TConsoleMenu>() where TConsoleMenu : class
+    public void Run<TConsoleMenu>() where TConsoleMenu : class
     {
         var navigationManager = App!.Services.GetRequiredService<IConsoleAppNavigationManager>();
-        await navigationManager.NavigateAsync<TConsoleMenu>();
+        navigationManager.Navigate<TConsoleMenu>();
     }
 }

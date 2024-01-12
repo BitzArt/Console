@@ -11,7 +11,7 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         where TMenu : class
     {
         selectionName ??= typeof(TMenu).Name;
-        AddSelection(selectionName, async () => await RunAsync<TMenu>());
+        AddSelection(selectionName, Run<TMenu>);
     }
 
     public void AddSelection(string name, Action? action = null, bool pauseOnComplete = false)
@@ -19,16 +19,16 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         SelectionItems.Add(new ConsoleSelectionMenuItem(name, action, pauseOnComplete));
     }
 
-    internal override async Task RenderAsync()
+    internal override void Render()
     {
         while(true)
         {
             if (_exiting) break;
-            await base.RenderAsync();
+            base.Render();
         }
     }
 
-    internal override async Task DisplayAsync()
+    internal override void Display()
     {
         var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>();
 
@@ -46,23 +46,16 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
             return;
         }
 
-        await OnSelectionBeforeInvokeAsync(selected);
-        OnSelectionBeforeInvoke(selected);
+        OnSelection(selected);
 
         InvokeSelection(selected);
 
-        await OnSelectionAsync(selected);
-        OnSelection(selected);
+        OnSelectionInvoked(selected);
 
         AfterSelectionInvoked(selected);
     }
 
-    protected virtual Task OnSelectionBeforeInvokeAsync(ConsoleSelectionMenuItem selection)
-    {
-        return Task.CompletedTask;
-    }
-
-    protected virtual void OnSelectionBeforeInvoke(ConsoleSelectionMenuItem selection)
+    protected virtual void OnSelection(ConsoleSelectionMenuItem selection)
     {
     }
 
@@ -71,12 +64,7 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         selection.Action?.Invoke();
     }
 
-    protected virtual Task OnSelectionAsync(ConsoleSelectionMenuItem selection)
-    {
-        return Task.CompletedTask;
-    }
-
-    protected virtual void OnSelection(ConsoleSelectionMenuItem selection)
+    protected virtual void OnSelectionInvoked(ConsoleSelectionMenuItem selection)
     {
     }
 

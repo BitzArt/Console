@@ -23,12 +23,12 @@ internal class VeggiesMenu(VeggyOptions options) : ConsoleSelectionMenu
         _focusOnPotato = true;
     }
 
-    protected override void OnSelectionBeforeInvoke(ConsoleSelectionMenuItem selection)
+    protected override void OnSelection(ConsoleSelectionMenuItem selection)
     {
         _focusOnPotato = false;
     }
 
-    protected override void OnSelection(ConsoleSelectionMenuItem selection)
+    protected override void OnSelectionInvoked(ConsoleSelectionMenuItem selection)
     {
         AnsiConsole.WriteLine($"You selected '{selection.Name}'");
 

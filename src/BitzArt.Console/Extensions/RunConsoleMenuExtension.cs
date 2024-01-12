@@ -5,7 +5,7 @@ namespace BitzArt.Console;
 
 public static class RunConsoleMenuExtension
 {
-    internal static async Task RunConsoleMenuAsync<TConsoleMenu>(this IServiceProvider serviceProvider)
+    internal static void RunConsoleMenuAsync<TConsoleMenu>(this IServiceProvider serviceProvider)
         where TConsoleMenu : class
     {
         var menu = serviceProvider.GetRequiredService<TConsoleMenu>();
@@ -14,10 +14,10 @@ public static class RunConsoleMenuExtension
 
         consoleMenu.Populate(serviceProvider);
 
-        await consoleMenu.RunAsync();
+        consoleMenu.Run();
     }
 
-    internal static async Task RunConsoleMenuAsync(this IServiceProvider serviceProvider, Type menuType)
+    internal static void RunConsoleMenuAsync(this IServiceProvider serviceProvider, Type menuType)
     {
         var menu = serviceProvider.GetRequiredService(menuType);
 
@@ -25,7 +25,7 @@ public static class RunConsoleMenuExtension
 
         consoleMenu.Populate(serviceProvider);
 
-        await consoleMenu.RunAsync();
+        consoleMenu.Run();
     }
 
     private static void Populate(this ConsoleMenu menu, IServiceProvider serviceProvider)
