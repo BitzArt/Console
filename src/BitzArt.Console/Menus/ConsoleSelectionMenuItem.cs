@@ -20,7 +20,7 @@ public class ConsoleSelectionMenuItem
     public bool IsExit = false;
     public bool PauseOnComplete = false;
 
-    public override string ToString() => IsExit ? $"[pink1]{Name}[/]" : $"[cyan]{Name}[/]";
+    public override string ToString() => IsExit ? $"[wheat1]{Name}[/]" : $"[cyan]{Name}[/]";
 
     internal static ConsoleSelectionMenuItem ExitItem => new("Exit")
     {
