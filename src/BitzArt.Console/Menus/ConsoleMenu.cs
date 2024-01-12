@@ -12,19 +12,23 @@ public abstract class ConsoleMenu
 
     public bool? IsMainMenu { get; internal set; }
 
-    public Task RunAsync()
+    public async Task RunAsync()
     {
-        Render();
-        return Task.CompletedTask;
+        await RenderAsync();
     }
 
-    internal virtual void Render()
+    internal virtual async Task RenderAsync()
     {
         AnsiConsole.Clear();
         DisplayTitle();
-        OnBeforeDisplay();
-        Display();
-        OnDisplayed();
+
+        OnRender();
+        await OnRenderAsync();
+
+        await DisplayAsync();
+
+        await OnDisplayAsync();
+        OnDisplay();
     }
 
     internal virtual void DisplayTitle()
@@ -33,15 +37,26 @@ public abstract class ConsoleMenu
         AnsiConsole.WriteLine();
     }
 
-    protected virtual void OnBeforeDisplay()
+    protected virtual Task OnRenderAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual void OnRender()
     {
     }
 
-    internal virtual void Display()
+    internal virtual Task DisplayAsync()
     {
+        return Task.CompletedTask;
     }
 
-    protected virtual void OnDisplayed()
+    protected virtual Task OnDisplayAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual void OnDisplay()
     {
     }
 

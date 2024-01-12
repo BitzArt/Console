@@ -19,16 +19,16 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         SelectionItems.Add(new ConsoleSelectionMenuItem(name, action, pauseOnComplete));
     }
 
-    internal override void Render()
+    internal override async Task RenderAsync()
     {
         while(true)
         {
             if (_exiting) break;
-            base.Render();
+            await base.RenderAsync();
         }
     }
 
-    internal override void Display()
+    internal override async Task DisplayAsync()
     {
         var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>();
 
@@ -46,10 +46,20 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
             return;
         }
 
+        await OnSelectionBeforeInvokeAsync(selected);
         OnSelectionBeforeInvoke(selected);
+
         InvokeSelection(selected);
+
+        await OnSelectionAsync(selected);
         OnSelection(selected);
+
         AfterSelectionInvoked(selected);
+    }
+
+    protected virtual Task OnSelectionBeforeInvokeAsync(ConsoleSelectionMenuItem selection)
+    {
+        return Task.CompletedTask;
     }
 
     protected virtual void OnSelectionBeforeInvoke(ConsoleSelectionMenuItem selection)
@@ -59,6 +69,11 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
     internal virtual void InvokeSelection(ConsoleSelectionMenuItem selection)
     {
         selection.Action?.Invoke();
+    }
+
+    protected virtual Task OnSelectionAsync(ConsoleSelectionMenuItem selection)
+    {
+        return Task.CompletedTask;
     }
 
     protected virtual void OnSelection(ConsoleSelectionMenuItem selection)
