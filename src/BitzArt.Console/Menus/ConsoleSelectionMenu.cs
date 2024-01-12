@@ -19,7 +19,7 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         SelectionItems.Add(new ConsoleSelectionMenuItem(name, action, pauseOnComplete));
     }
 
-    protected override void Render()
+    internal override void Render()
     {
         while(true)
         {
@@ -28,9 +28,9 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         }
     }
 
-    protected override void Display()
+    internal override void Display()
     {
-        var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>().Title($"[green]{Title}[/]");
+        var selectionPrompt = new SelectionPrompt<ConsoleSelectionMenuItem>();
 
         selectionPrompt.AddChoices(SelectionItems);
 
@@ -46,26 +46,26 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
             return;
         }
 
-        OnBeforeSelectionInvoke(selected);
+        OnSelectionBeforeInvoke(selected);
         InvokeSelection(selected);
         OnSelection(selected);
-        OnAfterSelectionInvoked(selected);
+        AfterSelectionInvoked(selected);
     }
 
-    public virtual void OnBeforeSelectionInvoke(ConsoleSelectionMenuItem selection)
+    protected virtual void OnSelectionBeforeInvoke(ConsoleSelectionMenuItem selection)
     {
     }
 
-    public virtual void InvokeSelection(ConsoleSelectionMenuItem selection)
+    internal virtual void InvokeSelection(ConsoleSelectionMenuItem selection)
     {
         selection.Action?.Invoke();
     }
 
-    public virtual void OnSelection(ConsoleSelectionMenuItem selection)
+    protected virtual void OnSelection(ConsoleSelectionMenuItem selection)
     {
     }
 
-    public virtual void OnAfterSelectionInvoked(ConsoleSelectionMenuItem selection)
+    internal virtual void AfterSelectionInvoked(ConsoleSelectionMenuItem selection)
     {
         if (selection.PauseOnComplete) Pause();
     }
@@ -76,7 +76,7 @@ public abstract class ConsoleSelectionMenu : ConsoleMenu
         System.Console.ReadKey();
     }
 
-    public virtual void OnExit()
+    protected virtual void OnExit()
     {
     }
 }

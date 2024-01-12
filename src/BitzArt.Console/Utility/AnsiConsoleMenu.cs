@@ -5,7 +5,7 @@ namespace BitzArt.Console;
 public static class AnsiConsoleMenu
 {
     public static void WriteTitle(string value)
-        => WriteLine($"\n====== {value.ToUpper()} ======\n", "yellow");
+        => WriteLine($"=========== {value.ToUpper()} ===========", "yellow");
 
     public static void WriteMenuItems(string value)
         => WriteLine($"\n---------------------------\n{value}\n---------------------------\n", "cyan");

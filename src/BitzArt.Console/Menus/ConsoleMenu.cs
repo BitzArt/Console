@@ -18,21 +18,27 @@ public abstract class ConsoleMenu
         return Task.CompletedTask;
     }
 
-    protected virtual void Render()
+    internal virtual void Render()
     {
         AnsiConsole.Clear();
+        DisplayTitle();
         OnBeforeDisplay();
         Display();
         OnDisplayed();
+    }
+
+    internal virtual void DisplayTitle()
+    {
+        AnsiConsoleMenu.WriteTitle(Title!);
+        AnsiConsole.WriteLine();
     }
 
     protected virtual void OnBeforeDisplay()
     {
     }
 
-    protected virtual void Display()
+    internal virtual void Display()
     {
-        AnsiConsoleMenu.WriteTitle(Title!);
     }
 
     protected virtual void OnDisplayed()
